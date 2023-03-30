@@ -24,11 +24,12 @@ class PostApiView(BaseAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         data = {**request.data, 'user': request.user.id}
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(data, status.HTTP_201_CREATED)
+            return Response(serializer.data, status.HTTP_201_CREATED)
         return Response({"error": serializer.errors})
 
     def patch(self, request, pk):
