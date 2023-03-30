@@ -9,21 +9,21 @@ from .services import handle_post, handle_like
 from users.api.utils import BaseAPIView
 
 
+class PostListAPIView(BaseAPIView, ListAPIView):
+    serializer_class = PostSerializer
+    queryset = handle_post.get_all_posts()
+
+
 class PostApiView(BaseAPIView):
     serializer_class = PostSerializer
 
     def get(self, request, *args, **kwargs):
-        if kwargs.get("pk"):
-            # details
-            post_instance = handle_post.get_instance_by_id(kwargs["pk"])
-            serializer = self.serializer_class(instance=post_instance)
-        else:
-            # all posts
-            queryset = handle_post.get_all_posts()
-            serializer = self.serializer_class(queryset, many=True)
+        # details
+        post_instance = handle_post.get_instance_by_id(kwargs["pk"])
+        serializer = self.serializer_class(instance=post_instance)
         return Response(serializer.data, status.HTTP_200_OK)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         data = {**request.data, 'user': request.user.id}
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
@@ -61,7 +61,7 @@ def like_post(request, post_id):
 def unlike_post(request, post_id):
     try:
         handle_like.delete_post_like(post_id, request.user.id)
-        return Response({'message': "successful"}, status=status.HTTP_201_CREATED)
+        return Response({'message': "successful"}, status=status.HTTP_200_OK)
     except Exception as ex:
         return Response({'message': str(ex)}, status=status.HTTP_403_FORBIDDEN)
 
@@ -72,5 +72,4 @@ class LikeAnalyticApiView(ListAPIView):
     def get_queryset(self):
         start_date = self.request.GET.get("date_from")
         end_date = self.request.GET.get("date_to")
-        print(start_date, end_date)
         return handle_like.get_like_analytic_for_dates(start_date, end_date)

@@ -22,7 +22,7 @@ def add_post_like(post_id, user_id):
 
 
 def filter_queryset_by_dates(start_date, end_date):
-    return PostLike.objects.filter(created_at__range=[start_date, end_date])
+    return PostLike.objects.filter(created_at__range=[start_date, end_date]).order_by("created_at")
 
 
 def get_like_analytic_for_dates(start_date, end_date):

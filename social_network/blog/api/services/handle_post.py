@@ -8,7 +8,7 @@ def get_instance_by_id(pk):
 
 
 def get_all_posts():
-    return Post.objects.all()
+    return Post.objects.all().order_by("created_at")
 
 
 def delete_post_by_id(pk):
