@@ -21,7 +21,7 @@ class Post(models.Model):
 class PostLike(models.Model):
     user = models.ForeignKey(get_user_model(), related_name="user_likes", on_delete=models.CASCADE)
     post = models.ForeignKey(Post, related_name="post_likes", on_delete=models.CASCADE)
-    created_at = models.DateField(null=True)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.id} - {self.post.title} - {self.user}"
